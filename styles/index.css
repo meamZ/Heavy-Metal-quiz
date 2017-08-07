@@ -10,7 +10,7 @@ header h1{
 }
 header h3{
   display: inline-block;
-  padding-right: 15px;
+  padding-right: 20px;
 }
 .infos{
   float:right;
@@ -48,4 +48,7 @@ main{
 }
 .answer-wrong{
   background-color: red;
+}
+.hide{
+  display: none;
 }
