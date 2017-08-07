@@ -44,11 +44,16 @@ main{
   text-align: left;
 }
 .answer-right{
+  background-color: green;
+  border: 2px solid darkgreen;
+}
+.answer-wasright{
   background-color: lightgreen;
 }
 .answer-wrong{
   background-color: red;
+  border: 2px solid black;
 }
-.hide{
+.hidden{
   display: none;
 }

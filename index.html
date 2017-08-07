@@ -12,28 +12,29 @@
     <header>
       <h1>Heavy-Metal quiz</h1>
       <div class="infos">
-        <h3 class="questioncount js-questioncount">Question 3 of 5</h3>
-        <h3 class="correctcount js-correctcount">2 correct, 1 incorrect</h3>
+        <h3 class="counter questioncount js-questioncount js-count hidden">Question 0 of 0</h3>
+        <h3 class="counter correctcount js-correctcount js-count hidden">0 correct, 0 incorrect</h3>
       </div>
     </header>
     <main>
-      <div class="question">
-        <h2 class="questiontext js-quesitontext">Testquestion</h2>
+      <div class="start js-start">
+        <h2>Welcome to my Heavy-Metal Quiz</h2>
+        <button type="button" class="js-startbutton startbutton">start</button>
       </div>
-      <div class="answers">
-        <div class="answer js-answer_a answer-wrong">
-  	      <span class="js-answer_a-text answer-text">Answer A</span>
+      <div class="quizbox js-quizbox hidden">
+        <div class="question">
+          <h2 class="questiontext js-quesitontext">Testquestion</h2>
         </div>
-        <div class="answer js-answer_b">
-  	      <span class="js-answer_b-text answer-text">Answer B</span>
+        <div class="answers">
+          <div class="answer js-answer answer-wrong">Answer A</div>
+          <div class="answer js-answer">Answer B</div>
+          <div class="answer js-answer answer-right">Answer C</div>
+          <div class="answer js-answer">Answer D</div>
         </div>
-        <div class="answer js-answer_c answer-right">
-  	      <span class="js-answer_c-text answer-text">Answer C</span>
-        </div>
-        <div class="answer js-answer_d">
-  	      <span class="js-answer_d-text answer-text">Answer D</span>
-        </div>
+        <button type="button" class="js-resetbutton resetbutton">Start again</button>
+        <button type="button" class="js-nextbutton nextbutton"></button>
       </div>
+
     </main>
     <!-- The jQuery library -->
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
