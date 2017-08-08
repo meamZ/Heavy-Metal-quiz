@@ -2,11 +2,13 @@
   font-family: roboto, sans-serif;
 }
 header{
-  background-color: lightgrey;
+  background-color: black;
+}
+header *{
+  color: white;
 }
 header h1{
   display: inline-block;
-    width: 50%;
 }
 header h3{
   display: inline-block;
@@ -17,7 +19,8 @@ header h3{
   vertical-align: center;
 }
 main{
-  width: 960px;
+  width: 90%;
+  max-width: 960px;
   margin-left: auto;
   margin-right: auto;
   padding-top: 30px;
@@ -33,15 +36,12 @@ main{
 }
 .answer{
   margin-left: 15px;
+  margin-right: 15px;
   margin-top: 10px;
   border: 2px solid lightgrey;
   padding-top: 25px;
   padding-bottom: 25px;
-}
-.answer-text{
-  display: inline-block;
-  vertical-align: middle;
-  text-align: left;
+  cursor: default;
 }
 .answer-right{
   background-color: green;
@@ -56,4 +56,58 @@ main{
 }
 .hidden{
   display: none;
+}
+.nextbutton{
+  float: right;
+}
+.start, .end{
+  text-align: center;
+}
+button{
+  margin-top: 10px;
+  height: 50px;
+  padding-left: 20px;
+  padding-right: 20px;
+  background-color: black;
+  color: white;
+  border: none;
+}
+button:hover{
+  background-color: green;
+}
+button:active{
+  background-color: darkgreen;
+}
+@media screen and (max-width: 700px){
+  header h1 {
+    font-size: 25px;
+  }
+  .infos{
+    float: none;
+  }
+  button{
+    height: 70px;
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+}
+@media screen and (max-width: 345px){
+  header h3{
+    font-size: 15px;
+  }
+}
+@media screen and (max-height: 700px){
+  .answer{
+    padding-top: 15px;
+    padding-bottom: 15px;
+  }
+  .answers{
+    padding-bottom: 10px;
+  }
+  .questiontext{
+    font-size:18px;
+  }
+  main{
+    padding-top: 10px;
+  }
 }

@@ -50,13 +50,21 @@ var state = {
               wasasked: false,
             }],
 currentquestionindex: -1,
-correctchildnr = -1,
+correctchildnr : -1,
 questioncounter: 0,
 correctcounter: 0,
 incorrectcounter: 0,
-maxquestions: 5,
+MAXQUESTIONS: 5,
             };
 //state modification functions
+function setWasAsked(state,questionindex ,wasasked){
+  state.questions[questionindex].wasasked = wasasked;
+}
+
+function setCorrectChildNr(state, correctChildNr){
+  state.correctchildnr = correctChildNr;
+}
+
 function setCurrentQuestionIndex(state, questionindex){
   state.currentquestionindex = questionindex;
 }
@@ -66,69 +74,179 @@ function incQuestionCounter(state){
 }
 
 function incCorrectCounter(state){
-  state.questioncounter += 1;
+  state.correctcounter += 1;
 }
 
 function incIncorrectCounter(state){
-  state.questioncounter += 1;
+  state.incorrectcounter += 1;
 }
 
-function checkAnswer(state, answer){
-  return state.questions[state.currentquestionindex] === answer;
+function checkAnswer(state, answer, element){
+  if(state.questions[state.currentquestionindex].correctanswer === answer){
+    element.addClass('answer-right');
+    incCorrectCounter(state);
+  } else{
+    element.addClass('answer-wrong');
+    element.parent().find('div:nth-child('+state.correctchildnr+')').addClass('answer-wasright');
+    incIncorrectCounter(state);
+  }
+  $('.js-nextbutton').show();
 }
 
 function resetQuiz(state){
   state.currentquestionindex= -1;
+  state.correctchildnr= -1;
   state.questioncounter= 0;
   state.correctcounter= 0;
   state.incorrectcounter= 0;
+  $('.quizbox,.js-count,.js-endbox').hide();
+  $('.js-start').show();
+  for(var i = 0; i < state.questions.length; i++){
+    setWasAsked(state,i,false);
+  }
+}
+
+function nextQuestion(state){
+  $('.js-nextbutton').hide();
+  if(state.questioncounter < state.MAXQUESTIONS) {
+    incQuestionCounter(state);
+    var possibleanswers = [];
+    for(var i = 0; i<state.questions.length; i++) {
+      if(state.questions[i].wasasked === false) {
+        possibleanswers.push(i);
+      }
+    }
+    var newquestionindex = getRandomInt(possibleanswers, state.questions.length);
+    setWasAsked(state, newquestionindex, true);
+    setCurrentQuestionIndex(state,newquestionindex);
+    renderQuestion(state, $('.questiontext'));
+    renderAnswers(state, $('.answers'));
+    updateQuestionCount(state);
+  } else{
+    renderEndPage(state);
+  }
 }
 
 function updateQuestionCount(state){
-  $('.js-questioncount').text('Question '+state.questioncounter+' of '+state.maxquestions);
+  $('.js-questioncount').text('Question '+state.questioncounter+' of '+state.MAXQUESTIONS);
 }
 function updateSuccessCount(state){
-  $('js-correctcount').text(state.correctcounter+' correct, '+state.incorrectcounter+' incorrect');
+  $('.js-correctcount').text(state.correctcounter+' correct, '+state.incorrectcounter+' incorrect');
 }
 
-function renderQuestion(question){
-
+function renderQuestion(state, element){
+  element.text(state.questions[state.currentquestionindex].question);
 }
 
-function renderAnswers(answers){
+function renderAnswers(state, element){
+  var answers = getShuffeledAnswers(state).map(function(answer){
+    return '<div class="answer js-answer">'+answer+'</div>';
+  });
+  element.html(answers);
+}
 
+function renderEndPage(state){
+  var text = '';
+  switch(state.correctcounter){
+    case 0:
+      text = 'That was horrible';
+    break;
+    case 1:
+      text = 'Not good';
+    break;
+    case 2:
+      text = 'OK';
+    break;
+    case 3:
+      text = 'Quite good';
+    break;
+    case 4:
+      text = 'Good';
+    break;
+    case 5:
+      text = 'Really good';
+    break;
+  }
+  $('.js-endheader').text(text+'!');
+  $('.js-endtext').text('You had '+state.correctcounter+' questions right and '+
+    state.incorrectcounter + ' questions wrong.');
+  $('.js-quizbox').hide();
+  $('.js-count').hide();
+  $('.js-endbox').show();
+}
+
+function getShuffeledAnswers(state){
+  var answers = state.questions[state.currentquestionindex].answers;
+  var correctanswer = state.questions[state.currentquestionindex].correctanswer;
+  var newanswers = [];
+  var possibleanswers = [0,1,2,3];
+  answers.forEach(function(answer){
+    var newindex = getRandomInt(possibleanswers, 4);
+    newanswers[newindex] = answer;
+    possibleanswers.splice(possibleanswers.indexOf(newindex),1);
+    if(answer === correctanswer){
+      setCorrectChildNr(state, newindex+1);
+    }
+  });
+  return newanswers;
+}
+
+function getRandomInt(inarray, max) {
+  var inar = inarray;
+  var wasntfound = true;
+  min = Math.ceil(0);
+  max = Math.floor(max);
+  while(wasntfound) {
+    //The maximum is exclusive and the minimum is inclusive
+    var testint = Math.floor(Math.random() * (max - min)) + min;
+    if(!testInt(inar, testint)){
+      return testint;
+    }
+  }
+}
+
+function testInt(inar, int){
+  return inar.find(function(i){
+     return i === int;
+  }) === undefined;
+}
+
+function handleReset(){
+  $('.js-resetbutton').click(function(event){
+    event.stopPropagation();
+    resetQuiz(state);
+  });
 }
 
 function handleStart(){
   $('.js-startbutton').click(function(){
-    $(this).parent().addClass('hidden');
-    nextQuestion(state.questions);
+    $(this).parent().hide();
+    nextQuestion(state);
+    renderQuestion(state,$('.questiontext'));
+    renderAnswers(state, $('.answers'));
     updateQuestionCount(state);
-    $('.quizbox,.js-count').removeClass('hidden');
+    updateSuccessCount(state);
+    $('.quizbox,.js-count').show();
   });
 }
 function handleAnswers(){
-  $('.answers').on('click','.js-answer',function(event){
-      event.stopPropagation();
-      var answer = $(this).find('.js-answer').text();
-      if(checkAnswer(state, answer)){
-        $(this).addClass('answer-right');
-      } else{
-        $(this).addClass('answer-wrong');
-        $(this).parent().find()
-      }
+  $('.js-answers').on('click','.js-answer',function(event){
+      var answer = $(this).text();
+      checkAnswer(state, answer, $(this));
+      updateSuccessCount(state);
   });
 }
 
 function handleNext(){
-
-}
-
-function nextQuestion(questions){
-
+  $('.js-nextbutton').click(function(event) {
+    event.stopPropagation();
+    nextQuestion(state);
+  });
 }
 
 $(function(){
   handleStart();
+  handleReset();
+  handleNext();
   handleAnswers();
 });
